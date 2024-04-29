@@ -1,0 +1,14 @@
+<%= turbo_frame_tag "coaching_sessions_frame" do %>
+  <%= paginate coaching_sessions, param_name: :session_page %>
+  <ul>
+    <% coaching_sessions.each do |coaching_session| %>
+      <li data-company-id="<%= coaching_session.company.id %>" data-program-id="<%= coaching_session.coaching_program.id %>">
+        <%= coaching_session.coaching_program.name %>: by <%= coaching_session.employee.name %>
+        <p>
+          <%= coaching_session.description %>
+          Coaching timing: <%= coaching_session.coaching_timing %>
+        </p>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

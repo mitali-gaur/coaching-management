@@ -1,0 +1,9 @@
+<%- if controller_name != 'sessions' %>
+  <%= link_to "Log in", new_employee_session_path(id: params[:id]) %><br />
+<% end %>
+
+<%- if devise_mapping.registerable? && controller_name != 'registrations' %>
+  <%= link_to "Sign up", new_employee_registration_path(id: params[:id]) %><br />
+<% end %>
+
+<%= link_to "Go to Company Dashboard", company_path(id: params[:id]) %><br />

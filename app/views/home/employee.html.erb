@@ -1,0 +1,8 @@
+<% content_for :title do %>
+  Employee
+<% end %>
+
+<div class="employee-info">
+  <p class="employee-name"><%= current_employee.name %></p>
+  <p class="enrolled-in">Enrolled in <%= @coaching_program.name %> (of company <%= @company.name %>)</p>
+</div>

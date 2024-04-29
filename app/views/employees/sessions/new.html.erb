@@ -1,0 +1,39 @@
+<% content_for :title do %>
+  Employee Login
+<% end %>
+
+<div class="login-container">
+  <h2 class="mb-4" style='text-align: center;'>Log in</h2>
+
+  <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: 'login-form' }) do |f| %>
+    <table class="table">
+      <tbody>
+        <tr>
+          <th><%= f.label :email, class: 'form-label' %></th>
+          <td><%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control" %></td>
+        </tr>
+        <tr>
+          <th><%= f.label :password, class: 'form-label' %></th>
+          <td><%= f.password_field :password, autocomplete: "current-password", class: "form-control" %></td>
+        </tr>
+        <% if devise_mapping.rememberable? %>
+          <tr>
+            <th></th>
+            <td>
+              <%= f.check_box :remember_me, class: "form-check-input" %>
+              <%= f.label :remember_me, class: "form-check-label" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <div class="form-group text-center">
+      <%= f.submit "Log in", class: "btn btn-primary btn-block" %>
+    </div>
+  <% end %>
+</div>
+
+<div style='width: 100%; text-align: center; margin-top: 20px'>
+  <%= render "employees/shared/links" %>
+</div>

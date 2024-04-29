@@ -1,0 +1,24 @@
+<% content_for :title do %>
+  Home
+<% end %>
+
+<div class="login-buttons-container">
+  <div class="row">
+    <div class="col-md-8">
+      <div class="company-dashboard-buttons">
+        <h3 class="mb-3">Company Dashboards</h3>
+        <% @companies.each do |company| %>
+          <%= link_to company.name, company_path(company), class: 'btn btn-primary btn-lg btn-block mb-2' %>
+        <% end %>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="admin-signin">
+        <%= link_to "Admin Login", '/admins/sign_in', class: 'btn btn-secondary btn-lg btn-block mb-2' %>
+      </div>
+      <div class="coach-signin">
+        <%= link_to "Coach Login", '/coaches/sign_in', class: 'btn btn-secondary btn-lg btn-block' %>
+      </div>
+    </div>
+  </div>
+</div>

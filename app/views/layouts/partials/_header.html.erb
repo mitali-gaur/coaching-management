@@ -1,0 +1,29 @@
+<% if current_employee %>
+  <% user = current_employee %>
+  <% logout_url = destroy_employee_session_path(current_employee.coaching_session.company) %>
+<% elsif current_coach %>
+  <% user = current_coach %>
+  <% logout_url = destroy_coach_session_path %>
+<% end %>
+<header>
+  <div class="header-container">
+    <div class="logo">
+      <%= link_to root_path do %>
+        <%= image_tag 'logo.jpeg', alt: 'Logo' %>
+      <% end %>
+    </div>
+
+    <nav>
+      <ul>
+        <% if user %>
+          <li>
+            <div style='color: black; line-height: 12px; margin-right: 3px; padding: 7px 16px 6px;'><%= user.email %></div>
+          </li>
+          <li>
+            <%= button_to "Log Out", logout_url, method: :delete, class: 'btn-logout' %>
+          </li>
+        <% end %>
+      </ul>
+    </nav>
+  </div>
+</header>

@@ -1,0 +1,150 @@
+<% content_for :title do %>
+  Employee Signup
+<% end %>
+
+<div class="registration-container">
+  <div class="step-indicator">
+    <span class="step active">Step 1</span>
+    <span class="step">Step 2</span>
+  </div>
+
+  <div id="step1" class="registration-step">
+    <!-- Step 1 Form -->
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { id: 'step1-form' }) do |f| %>
+      <%= f.fields_for :coaching_session do |cs_form| %>
+        <table class="table" style='width: 100%'>
+          <tbody>
+            <tr>
+              <th><%= cs_form.label :coaching_program, class: 'form-label' %></th>
+              <td><%= cs_form.select :coaching_program_id, @company.coaching_programs.collect { |p| [p.name, p.id] }, { prompt: 'Select Coaching Program' }, class: 'form-control' %></td>
+            </tr>
+            <tr>
+              <th><%= cs_form.label :description, class: 'form-label' %></th>
+              <td><%= cs_form.text_area :description, class: 'form-control' %></td>
+            </tr>
+            <tr>
+              <th><%= cs_form.label :coaching_timing, 'Set Coaching time:', class: 'form-label' %></th>
+              <td><%= cs_form.datetime_field :coaching_timing, class: 'form-control' %></td>
+            </tr>
+          </tbody>
+        </table>
+        <%= button_tag 'Next', type: 'button', id: 'next-step', class: 'btn btn-primary mt-3' %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <div id="step2" class="registration-step" style="display: none;">
+    <!-- Step 2 Form -->
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { id: 'step2-form' }) do |f| %>
+      <table class="table">
+        <tbody>
+          <tr>
+            <th><%= f.label :name, 'Full Name:', class: 'form-label' %></th>
+            <td><%= f.text_field :name, class: 'form-control' %></td>
+          </tr>
+          <tr>
+            <th><%= f.label :email, 'Email:', class: 'form-label' %></th>
+            <td><%= f.email_field :email, class: 'form-control' %></td>
+          </tr>
+          <tr>
+            <th><%= f.label :password, 'Password:', class: 'form-label' %></th>
+            <td><%= f.password_field :password, class: 'form-control' %></td>
+          </tr>
+          <tr>
+            <th><%= f.label :phone_number, 'Phone Number:', class: 'form-label' %></th>
+            <td><%= f.text_field :phone_number, class: 'form-control' %></td>
+          </tr>
+          <tr>
+            <th><%= f.fields_for :coaching_session do |cs_form| %>
+                <%= cs_form.label :coach, 'Coach (optional):', class: 'form-label' %>
+              <% end %>
+            </th>
+            <td><%= f.fields_for :coaching_session do |cs_form| %>
+                <%= cs_form.select :coach_id, Coach.all.collect { |p| [p.name, p.id] }, { prompt: 'Select Coach' }, class: 'form-control', id: "coach_select" %>
+              <% end %>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="button-group mt-3">
+        <%= button_tag 'Back', type: 'button', id: 'back-step', class: 'btn btn-secondary' %>
+        <%= f.submit 'Submit', class: 'btn btn-primary' %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div style='width: 100%; text-align: center; margin-top: 20px'>
+  <%= render "employees/shared/links" %>
+</div>
+
+<script>
+  $(document).ready(function() {
+    $('#next-step').click(function(e) {
+      e.preventDefault();
+
+      var step1Data = $('#step1-form').serializeArray().reduce(function(obj, item) {
+        obj[item.name] = item.value;
+        return obj;
+      }, {});
+
+      if (step1Data["employee[coaching_session][coaching_program_id]"] === '' || step1Data["employee[coaching_session][coaching_program_id]"] === null) {
+        alert('Please select a coaching program.');
+        return;
+      }
+
+      $('#step1').hide();
+      $('#step2').show();
+
+      $('.step').removeClass('active');
+      $('.step:last-child').addClass('active');
+
+      populateSelect(step1Data["employee[coaching_session_attributes][coaching_program_id]"]);
+
+      $.each(step1Data, function(key, value) {
+        $('#step2-form').append('<input type="hidden" name="' + key + '" value="' + value + '">');
+      });
+    });
+
+    function populateSelect(companyProgramId) {
+      $('#coach_select').empty();
+      $('#coach_select').append($('<option>', {
+        value: '',
+        text: 'Select Coach'
+      }));
+
+      $.ajax({
+        url: '/coaches',
+        type: 'GET',
+        data: { company_program_id: companyProgramId },
+        success: function(data) {
+          $('#coach_select').empty();
+          $('#coach_select').append($('<option>', {
+            value: '',
+            text: 'Select Coach'
+          }));
+          $.each(data.coaches, function(index, coach) {
+            $('#coach_select').append($('<option>', {
+              value: coach.id,
+              text: coach.name
+            }));
+          });
+        },
+        error: function(xhr, status, error) {
+          console.error(error);
+        }
+      });
+    }
+
+    $('#back-step').click(function(e) {
+      e.preventDefault();
+
+      $('#step2-form').trigger('reset');
+      $('#step2').hide();
+      $('#step1').show();
+
+      $('.step').removeClass('active');
+      $('.step:first-child').addClass('active');
+    });
+  });
+</script>

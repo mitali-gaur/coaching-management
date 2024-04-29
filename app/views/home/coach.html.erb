@@ -1,0 +1,52 @@
+<% content_for :title do %>
+  Coach Dashboard
+<% end %>
+
+<div class="dashboard-section">
+  <h2>Enrolled Coaching Sessions</h2>
+
+  <label for="company_filter">Filter by name:</label>
+  <input type="text" id="coaching_session_filter">
+
+  <%= turbo_frame_tag "coaching_sessions_frame" do %>
+    <%= render 'home/coaching_sessions_list', coaching_sessions: @coaching_sessions %>
+  <% end %>
+</div>
+
+<div class="dashboard-section">
+  <h2>Accessible Coaching Programs</h2>
+  <ul>
+    <% @coaching_programs.each do |coaching_program| %>
+      <li><%= coaching_program.name %>: <%= coaching_program.description %></li>
+    <% end %>
+  </ul>
+</div>
+
+
+<div class="dashboard-section">
+  <h2>Alloted Companies</h2>
+  <ul>
+    <% @companies.each do |company| %>
+      <li><%= company.name %>: <%= company.description %></li>
+    <% end %>
+  </ul>
+</div>
+
+<script>
+  function fetchFilteredData() {
+    var nameFilter = $('#coaching_session_filter').val();
+
+    var url = '/coaching_sessions/filter';
+    url += '?query=' + encodeURIComponent(nameFilter);
+
+    fetch(url, {
+      headers: {
+        'Turbo-Frame': 'coaching_sessions_frame'
+      }
+    });
+  }
+
+  $('#coaching_session_filter').on('input', function() {
+    fetchFilteredData();
+  });
+</script>
