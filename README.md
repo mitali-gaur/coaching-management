@@ -29,7 +29,20 @@ Make sure you have the following installed on your local machine:
     ```bash
     rails db:create db:migrate db:seed
     ```
-4. Start server:
+
+4. Install packages:
+
+    ```bash
+    npm install
+    ```
+
+5. Precompile assets:
+
+    ```bash
+    rails assets:precompile
+    ```
+
+6. Start server:
 
     ```bash
     rails server
